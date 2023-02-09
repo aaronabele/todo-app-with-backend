@@ -8,6 +8,26 @@
     <title>Todo-App with Backend</title>
   </head>
   <body>
+    <header id="header">
+      <h1>Todo-App with Backend</h1>
+    </header>
+    <main id="main">
+      <div class="input-add-delete-wrapper">
+        <input
+          id="input-todo"
+          type="text"
+          placeholder="Type in your Todos..."
+        />
+        <button id="add-todo">Add your Todos</button>
+        <button id="remove-done-todo">Remove done Todos</button>
+      </div>
+      <div class="todo-list-wrapper">
+        <h2>Your Todos</h2>
+        <ul id="todo-list">
+          <li class="todo"></li>
+        </ul>
+      </div>
+    </main>
     <script src="script.js"></script>
   </body>
 </html>
