@@ -5,7 +5,6 @@ const newTodoInput = document.querySelector("input");
 const todoList = document.querySelector("#todo-list");
 
 let todos = [];
-let createdUrl = [];
 
 //Get Objects from backend
 
@@ -15,10 +14,10 @@ function getObjectsFromBackend() {
     .then((todosFromAPI) => {
       todos = todosFromAPI;
       renderTodos();
-
-      for (let i = 1; i < todos.length; i++) {
-        createdUrl.push(url + "/" + [i]);
-      }
+      console.log(todos);
+      console.log(todos[0].id);
+      console.log(todos[0].done);
+      console.log(todos[0].description);
     });
 }
 getObjectsFromBackend();
@@ -67,18 +66,48 @@ btnAdd.addEventListener("click", () => {
     });
 });
 
+//UPDATE Todos
+
+todoList.addEventListener("change", (e) => {
+  for (let i = 0; i < todos.length; i++) {
+    todos[i].done = e.target.checked;
+
+    const updateTodoId = todos[i].id;
+    const updateTodoText = todos[i].description;
+    const updateTodoDoneState = todos[i].done;
+
+    const updatedTodo = {
+      id: updateTodoId,
+      description: updateTodoText,
+      done: updateTodoDoneState,
+    };
+
+    fetch(url + "/" + todos[i].id, {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(updatedTodo),
+    })
+      .then((res) => res.json())
+      .then((updatedTodoFromApi) => {
+        console.log(updatedTodoFromApi);
+        renderTodos();
+      });
+  }
+});
+
 //Delete Done Toods
 btnRemove.addEventListener("click", () => {
-  todos = todos.filter((todo) => todo.done === false);
-
   for (let i = 0; i < todos.length; i++) {
-    if (todos.done === false) {
-      fetch(createdUrl, {
+    if (todos[i].done === true) {
+      fetch(url + "/" + todos[i].id, {
         method: "DELETE",
       })
         .then((res) => res.json())
         .then(() => {});
     }
   }
+  todos = todos.filter((todo) => todo.done === false);
   renderTodos();
 });
