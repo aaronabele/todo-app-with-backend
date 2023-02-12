@@ -7,7 +7,6 @@ const todoList = document.querySelector("#todo-list");
 let todos = [];
 
 //Get Objects from backend
-
 function getObjectsFromBackend() {
   fetch(url)
     .then((res) => res.json())
@@ -43,9 +42,12 @@ function renderTodos() {
     todoList.appendChild(newLi);
   });
 }
+renderTodos();
 
 //Add Todos
-btnAdd.addEventListener("click", () => {
+btnAdd.addEventListener("click", addNewTodo);
+
+function addNewTodo() {
   const newTodoText = newTodoInput.value;
   const newTodo = {
     description: newTodoText,
@@ -64,11 +66,12 @@ btnAdd.addEventListener("click", () => {
       todos.push(newTodoFromApi);
       renderTodos();
     });
-});
+}
 
 //UPDATE Todos
+todoList.addEventListener("change", updateTodos);
 
-todoList.addEventListener("change", (e) => {
+function updateTodos() {
   for (let i = 0; i < todos.length; i++) {
     todos[i].done = e.target.checked;
 
@@ -95,10 +98,12 @@ todoList.addEventListener("change", (e) => {
         renderTodos();
       });
   }
-});
+}
 
 //Delete Done Toods
-btnRemove.addEventListener("click", () => {
+btnRemove.addEventListener("click", deleteDoneTodos);
+
+function deleteDoneTodos() {
   for (let i = 0; i < todos.length; i++) {
     if (todos[i].done === true) {
       fetch(url + "/" + todos[i].id, {
@@ -110,4 +115,4 @@ btnRemove.addEventListener("click", () => {
   }
   todos = todos.filter((todo) => todo.done === false);
   renderTodos();
-});
+}
