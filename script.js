@@ -13,10 +13,6 @@ function getObjectsFromBackend() {
     .then((todosFromAPI) => {
       todos = todosFromAPI;
       renderTodos();
-      console.log(todos);
-      console.log(todos[0].id);
-      console.log(todos[0].done);
-      console.log(todos[0].description);
     });
 }
 getObjectsFromBackend();
@@ -30,9 +26,11 @@ function renderTodos() {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = todo.done;
+    checkbox.value = todo.id;
 
     checkbox.addEventListener("change", (e) => {
       todo.done = e.target.checked;
+      updateTodo(todo);
     });
 
     newLi.appendChild(checkbox);
@@ -69,35 +67,20 @@ function addNewTodo() {
 }
 
 //UPDATE Todos
-todoList.addEventListener("change", updateTodos);
-
-function updateTodos() {
-  for (let i = 0; i < todos.length; i++) {
-    todos[i].done = e.target.checked;
-
-    const updateTodoId = todos[i].id;
-    const updateTodoText = todos[i].description;
-    const updateTodoDoneState = todos[i].done;
-
-    const updatedTodo = {
-      id: updateTodoId,
-      description: updateTodoText,
-      done: updateTodoDoneState,
-    };
-
-    fetch(url + "/" + todos[i].id, {
-      method: "PUT",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(updatedTodo),
-    })
-      .then((res) => res.json())
-      .then((updatedTodoFromApi) => {
-        console.log(updatedTodoFromApi);
-        renderTodos();
-      });
-  }
+function updateTodo(todo) {
+  fetch(url + "/" + todo.id, {
+    method: "PUT",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(todo),
+  })
+    .then((res) => res.json())
+    .then((updatedTodoFromApi) => {
+      console.log(updatedTodoFromApi);
+      todo = updatedTodoFromApi;
+      renderTodos();
+    });
 }
 
 //Delete Done Toods
